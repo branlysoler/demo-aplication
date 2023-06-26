@@ -1,0 +1,22 @@
+spring:
+      port: 8081
+      datasource:
+                url: jdbc:postgresql://localhost:5432/otherdemo
+                username: postgres
+                password: postgres
+                driverClassName: org.postgresql.Driver
+      jpa:
+         properties:
+                   hibernate:
+                            dialect: org.hibernate.dialect.PostgreSQLDialect
+                            hbm2ddl.auto: update
+          show.sql: true
+      
+springdoc:
+         api.docs.enabled: true
+         swagger.ui:
+                   enabled: true
+                   path: /doc/swagger-ui
+                  
+
+      
