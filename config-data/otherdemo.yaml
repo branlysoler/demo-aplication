@@ -8,7 +8,7 @@ spring:
 
   #-- DATASOURCE --#
   datasource:
-    url: jdbc:postgresql://localhost:5432/otherdemo
+    url: jdbc:postgresql://152.207.165.99:5432/otherdemo
     username: postgres
     password: postgres
     driverClassName: org.postgresql.Driver
