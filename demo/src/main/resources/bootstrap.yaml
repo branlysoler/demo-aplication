@@ -1,6 +1,34 @@
-#-- CLOUD --#
+#-- NAME --#
 spring:
+  application:
+    name: demo
+
+  #-- DATASOURCE --#
+  datasource:
+    url: jdbc:postgresql://localhost:5432/demo
+    username: postgres
+    password: postgres
+    driverClassName: org.postgresql.Driver
+
+  #-- JPA --#
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        hbm2ddl:
+          auto: update
+    show-sql: true
+
+  #-- CLOUD --#
   cloud:
     config:
       enabled: true
       uri: http://localhost:8040
+
+# -- SWAGGER --#
+springdoc:
+  api-docs:
+    enabled: true
+  swagger-ui:
+    enabled: true
+    path: /doc/swagger-ui
