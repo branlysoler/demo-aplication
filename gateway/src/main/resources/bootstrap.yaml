@@ -1,0 +1,10 @@
+#-- NAME --#
+spring:
+  application:
+    name: gateway
+
+#-- CLOUD --#
+  cloud:
+    config:
+      enabled: true
+      uri: http://localhost:8040
