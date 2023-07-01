@@ -12,28 +12,28 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 import com.example.demo.dto.SuplyDTO;
 
-@FeignClient(name = "otherdemo", url = "http://localhost:8081/api")
+@FeignClient(name = "otherdemo")
 public interface OtherDemoFeignClient {
 
-    @PostMapping("/suplies/create")
+    @PostMapping("/api/suplies/create")
     public ResponseEntity<?> create(@RequestBody SuplyDTO suplyDTO);
 
-    @PutMapping("/suplies/update")
+    @PutMapping("/api/suplies/update")
     public ResponseEntity<?> update(@RequestBody SuplyDTO suplyDTO);
 
-    @GetMapping("/suplies/findAll")
+    @GetMapping("/api/suplies/findAll")
     public ResponseEntity<?> findAll(Pageable pageable);
 
-    @GetMapping("/suplies/findById/{id}")
+    @GetMapping("/api/suplies/findById/{id}")
     public ResponseEntity<?> findById(@PathVariable Long id);
 
-    @GetMapping("/suplies/findByName/{name}")
+    @GetMapping("/api/suplies/findByName/{name}")
     public ResponseEntity<?> findByName(@PathVariable String name);
 
-    @DeleteMapping("/suplies/delete/{id}")
+    @DeleteMapping("/api/suplies/delete/{id}")
     public ResponseEntity<?> deleteById(@PathVariable Long id);
 
-    @DeleteMapping("/suplies/deleteAll")
+    @DeleteMapping("/api/suplies/deleteAll")
     public ResponseEntity<?> deleteAll();
     
 }
