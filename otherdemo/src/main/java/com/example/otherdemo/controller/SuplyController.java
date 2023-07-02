@@ -18,8 +18,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.otherdemo.dto.SuplyDTO;
+import com.example.otherdemo.exception.ResourceNotFoundException;
 import com.example.otherdemo.service.SuplyService;
-import com.example.otherdemo.util.Text;
 
 @RestController
 @RequestMapping("api/suplies")
@@ -33,21 +33,21 @@ public class SuplyController {
     @PostMapping("/create")
     public ResponseEntity<?> create(@RequestBody SuplyDTO suplyDTO) {
         LOGGER.info("Create SUply: " + suplyDTO.toString());
-        Boolean verifyCreate = suplyService.verifyCreate(suplyDTO);
-        if (verifyCreate)
-            return ResponseEntity.status(HttpStatus.CREATED).body(suplyService.save(suplyDTO));
-        else
-            return ResponseEntity.badRequest().header(Text.CAUSE, Text.VERIFY_CREATE_SUPLY).build();
+        try {
+            return ResponseEntity.status(HttpStatus.CREATED).body(suplyService.create(suplyDTO));
+        } catch (ResourceNotFoundException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
     @PutMapping("/update")
     public ResponseEntity<?> update(@RequestBody SuplyDTO suplyDTO) {
         LOGGER.info("Update SUply: " + suplyDTO.toString());
-        Boolean verifyUpdate = suplyService.verifyUpdate(suplyDTO);
-        if (verifyUpdate)
-            return ResponseEntity.ok(suplyService.save(suplyDTO));
-        else
-            return ResponseEntity.badRequest().header(Text.CAUSE, Text.VERIFY_UPDATE_SUPLY).build();
+        try {
+            return ResponseEntity.ok(suplyService.update(suplyDTO));
+        } catch (ResourceNotFoundException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
     @GetMapping("/findAll")
@@ -62,13 +62,13 @@ public class SuplyController {
     @GetMapping("/findById/{id}")
     public ResponseEntity<?> findById(@PathVariable Long id) {
         return suplyService.findById(id).map(dto -> ResponseEntity.ok(dto))
-                .orElse(ResponseEntity.notFound().header(Text.CAUSE, Text.ID_NOT_EXISTS).build());
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @GetMapping("/findByName/{name}")
     public ResponseEntity<?> findByName(@PathVariable String name) {
         return suplyService.findByName(name).map(dto -> ResponseEntity.ok(dto))
-                .orElse(ResponseEntity.notFound().header(Text.CAUSE, Text.NAME_NOT_EXISTS).build());
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @DeleteMapping("/delete/{id}")
@@ -77,7 +77,7 @@ public class SuplyController {
             suplyService.deleteById(id);
             return ResponseEntity.ok().build();
         } else
-            return ResponseEntity.notFound().header(Text.CAUSE, Text.ID_NOT_EXISTS).build();
+            return ResponseEntity.notFound().build();
     }
 
     @DeleteMapping("/deleteAll")

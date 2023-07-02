@@ -8,8 +8,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.dto.CategoryDTO;
+import com.example.demo.entity.Category;
+import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.mapper.ICategoryMapper;
 import com.example.demo.repository.ICategoryRepository;
+import com.example.demo.util.Text;
 
 @Service
 public class CategoryService {
@@ -20,24 +23,25 @@ public class CategoryService {
     @Autowired
     private ICategoryMapper categoryMapper;
 
-    public Boolean verifyCreate(CategoryDTO categoryDTO) {
-        return findByName(categoryDTO.getName()).isEmpty();
+    public CategoryDTO create(CategoryDTO categoryDto) {
+        Optional<Category> optCategory = iCategoryRepository.findByName(categoryDto.getName());
+        if (optCategory.isPresent())
+            throw new ResourceNotFoundException(Text.NAME_ALREADY_EXISTS);
+        return save(categoryDto);
     }
 
-    public Optional<CategoryDTO> verifyUpdate(CategoryDTO categoryDTO) {
-        Optional<CategoryDTO> optCategoryById = findById(categoryDTO.getId());
-        Optional<CategoryDTO> optCategoryByName = findByName(categoryDTO.getName());
-        if (optCategoryById.isPresent()) {
-            String nameCompare = optCategoryById.get().getName();
-            if (optCategoryByName.isPresent() && nameCompare != optCategoryByName.get().getName()) {
-                return Optional.empty();
-            }
-            return optCategoryById;
-        }
-        return Optional.empty();
+    public CategoryDTO update(CategoryDTO categoryDto) {
+        Optional<CategoryDTO> optCategoryById = findById(categoryDto.getId());
+        if (optCategoryById.isEmpty())
+            throw new ResourceNotFoundException(Text.ID_NOT_EXISTS);
+        Optional<CategoryDTO> optCategoryByName = findByName(categoryDto.getName());
+        String nameCompare = optCategoryById.get().getName();
+        if (optCategoryByName.isPresent() && nameCompare != optCategoryByName.get().getName())
+            throw new ResourceNotFoundException(Text.NAME_ALREADY_EXISTS);
+        return save(categoryDto);
     }
 
-    public CategoryDTO save(CategoryDTO categoryDto) {
+    private CategoryDTO save(CategoryDTO categoryDto) {
         return categoryMapper.entityToDTO(iCategoryRepository.save(categoryMapper.dtoToEntity(categoryDto)));
     }
 

@@ -19,8 +19,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.dto.EmploymentDTO;
+import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.service.EmploymentService;
-import com.example.demo.util.Text;
 
 @RestController
 @RequestMapping("api/employments")
@@ -34,21 +34,21 @@ public class EmploymentController {
     @PostMapping("/create")
     public ResponseEntity<?> create(@RequestBody EmploymentDTO employmentDTO) {
         LOGGER.info("Create Employment: " + employmentDTO.toString());
-        Boolean verifyCreate = employmentService.verifyCreate(employmentDTO);
-        if (verifyCreate)
-            return ResponseEntity.status(HttpStatus.CREATED).body(employmentService.save(employmentDTO));
-        else
-            return ResponseEntity.badRequest().header(Text.CAUSE, Text.VERIFY_CREATE_EMPLOYMENT).build();
+        try {
+            return ResponseEntity.status(HttpStatus.CREATED).body(employmentService.create(employmentDTO));
+        } catch (ResourceNotFoundException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
     @PutMapping("/update")
     public ResponseEntity<?> update(@RequestBody EmploymentDTO employmentDTO) {
         LOGGER.info("Update Employment: " + employmentDTO.toString());
-        Boolean verifyUpdate = employmentService.verifyUpdate(employmentDTO);
-        if (verifyUpdate)
-            return ResponseEntity.ok(employmentService.save(employmentDTO));
-        else
-            return ResponseEntity.badRequest().header(Text.CAUSE, Text.VERIFY_UPDATE_EMPLOYMENT).build();
+        try {
+            return ResponseEntity.ok(employmentService.update(employmentDTO));
+        } catch (ResourceNotFoundException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
     @GetMapping("/findAll")
@@ -63,26 +63,26 @@ public class EmploymentController {
     @GetMapping("/findById/{id}")
     public ResponseEntity<?> findById(@PathVariable Long id) {
         return employmentService.findById(id).map(dto -> ResponseEntity.ok(dto))
-                .orElse(ResponseEntity.notFound().header(Text.CAUSE, Text.ID_NOT_EXISTS).build());
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @GetMapping("/findByName/{name}")
     public ResponseEntity<?> findByName(@PathVariable String name) {
         return employmentService.findByName(name).map(dto -> ResponseEntity.ok(dto))
-                .orElse(ResponseEntity.notFound().header(Text.CAUSE, Text.NAME_NOT_EXISTS).build());
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @GetMapping("/findByLevel/{level}")
     public ResponseEntity<?> findByName(@PathVariable Integer level) {
         return employmentService.findByLevel(level).map(dto -> ResponseEntity.ok(dto))
-                .orElse(ResponseEntity.notFound().header(Text.CAUSE, Text.LEVEL_NOT_EXISTS).build());
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @GetMapping("/findByNameAndLevel")
     public ResponseEntity<?> findByNameAndLevel(@RequestParam(required = true) String name,
             @RequestParam(required = true) Integer level) {
         return employmentService.findByNameAndLevel(name, level).map(dto -> ResponseEntity.ok(dto))
-                .orElse(ResponseEntity.notFound().header(Text.CAUSE, Text.NAME_AND_LEVEL_NOT_EXISTS).build());
+                .orElse(ResponseEntity.notFound().build());
     }
 
 
@@ -92,7 +92,7 @@ public class EmploymentController {
             employmentService.deleteById(id);
             return ResponseEntity.ok().build();
         } else
-            return ResponseEntity.notFound().header(Text.CAUSE, Text.ID_NOT_EXISTS).build();
+            return ResponseEntity.notFound().build();
     }
 
     @DeleteMapping("/deleteAll")
