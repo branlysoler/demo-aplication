@@ -1,7 +1,6 @@
 package com.example.demo.controller;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -19,9 +18,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.dto.CategoryDTO;
-import com.example.demo.dto.EmploymentDTO;
+import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.service.CategoryService;
-import com.example.demo.util.Text;
 
 @RestController
 @RequestMapping("api/categories")
@@ -33,26 +31,23 @@ public class CategoryController {
     private static final Log LOGGER = LogFactory.getLog(CategoryController.class);
 
     @PostMapping("/create")
-    public ResponseEntity<?> create(@RequestBody CategoryDTO categoryDTO) {
-        LOGGER.info("Create Category: " + categoryDTO.toString());
-        Boolean verifyCreate = categoryService.verifyCreate(categoryDTO);
-        if (verifyCreate)
-            return ResponseEntity.status(HttpStatus.CREATED).body(categoryService.save(categoryDTO));
-        else
-            return ResponseEntity.badRequest().header(Text.CAUSE, Text.VERIFY_CREATE_CATEGORY).build();
+    public ResponseEntity<?> create(@RequestBody CategoryDTO categoryDto) {
+        LOGGER.info("Create Category: " + categoryDto.toString());
+        try {
+            return ResponseEntity.status(HttpStatus.CREATED).body(categoryService.create(categoryDto));
+        } catch (ResourceNotFoundException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
     @PutMapping("/update")
-    public ResponseEntity<?> update(@RequestBody CategoryDTO categoryDTO) {
-        LOGGER.info("Update SUply: " + categoryDTO.toString());
-        Optional<CategoryDTO> optVerifyUpdate = categoryService.verifyUpdate(categoryDTO);
-        if (optVerifyUpdate.isPresent()) {
-            List<EmploymentDTO> employmentDTOs = optVerifyUpdate.get().getEmployments();
-            categoryDTO.setEmployments(employmentDTOs);
-            return ResponseEntity.ok(categoryService.save(categoryDTO));
+    public ResponseEntity<?> update(@RequestBody CategoryDTO categoryDto) {
+        LOGGER.info("Update Category: " + categoryDto.toString());
+        try {
+            return ResponseEntity.ok(categoryService.update(categoryDto));
+        } catch (ResourceNotFoundException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
-        else
-            return ResponseEntity.badRequest().header(Text.CAUSE, Text.VERIFY_UPDATE_CATEGORY).build();
     }
 
     @GetMapping("/findAll")
@@ -67,13 +62,13 @@ public class CategoryController {
     @GetMapping("/findById/{id}")
     public ResponseEntity<?> findById(@PathVariable Long id) {
         return categoryService.findById(id).map(dto -> ResponseEntity.ok(dto))
-                .orElse(ResponseEntity.notFound().header(Text.CAUSE, Text.ID_NOT_EXISTS).build());
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @GetMapping("/findByName/{name}")
     public ResponseEntity<?> findByName(@PathVariable String name) {
         return categoryService.findByName(name).map(dto -> ResponseEntity.ok(dto))
-                .orElse(ResponseEntity.notFound().header(Text.CAUSE, Text.NAME_NOT_EXISTS).build());
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @DeleteMapping("/delete/{id}")
@@ -82,7 +77,7 @@ public class CategoryController {
             categoryService.deleteById(id);
             return ResponseEntity.ok().build();
         } else
-            return ResponseEntity.notFound().header(Text.CAUSE, Text.ID_NOT_EXISTS).build();
+            return ResponseEntity.notFound().build();
     }
 
     @DeleteMapping("/deleteAll")

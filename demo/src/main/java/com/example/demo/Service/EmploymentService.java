@@ -9,9 +9,11 @@ import org.springframework.stereotype.Service;
 
 import com.example.demo.dto.EmploymentDTO;
 import com.example.demo.entity.Employment;
+import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.mapper.IEmploymentMapper;
 import com.example.demo.repository.ICategoryRepository;
 import com.example.demo.repository.IEmploymentRepository;
+import com.example.demo.util.Text;
 
 @Service
 public class EmploymentService {
@@ -25,35 +27,46 @@ public class EmploymentService {
     @Autowired
     private IEmploymentMapper employmentMapper;
 
-    public Boolean verifyCreate(EmploymentDTO employmentDTO) {
-        Boolean result = findByName(employmentDTO.getName()).isEmpty()
-                || findByLevel(employmentDTO.getLevel()).isEmpty();
-        return result;
+
+    public EmploymentDTO create(EmploymentDTO employmentDto) {
+
+        Optional<Employment> optEmploymentByName = iEmploymentRepository.findByName(employmentDto.getName());
+        if (optEmploymentByName.isPresent())
+            throw new ResourceNotFoundException(Text.NAME_ALREADY_EXISTS);
+
+        Optional<Employment> optEmploymentByLevel = iEmploymentRepository.findByLevel(employmentDto.getLevel());
+        if (optEmploymentByLevel.isPresent())
+            throw new ResourceNotFoundException(Text.LEVEL_ALREADY_EXISTS);
+
+        return save(employmentDto);
     }
 
-    public Boolean verifyUpdate(EmploymentDTO employmentDTO) {
-        Optional<EmploymentDTO> optEmploymentById = findById(employmentDTO.getId());
-        Optional<EmploymentDTO> optEmploymentByName = findByName(employmentDTO.getName());
-        Optional<EmploymentDTO> optEmploymentByLevel = findByLevel(employmentDTO.getLevel());
-        if (optEmploymentById.isPresent()) {
-            String nameCompare = optEmploymentById.get().getName();
-            Integer levelCompare = optEmploymentById.get().getLevel();
-            if ((optEmploymentByName.isPresent() && nameCompare != optEmploymentByName.get().getName())
-                    || (levelCompare != optEmploymentByLevel.get().getLevel())) {
-                return Boolean.FALSE;
-            }
-            return Boolean.TRUE;
-        }
-        return Boolean.FALSE;
+    public EmploymentDTO update(EmploymentDTO employmentDto) {
+
+        Optional<EmploymentDTO> optEmploymentById = findById(employmentDto.getId());
+        if (optEmploymentById.isEmpty())
+            throw new ResourceNotFoundException(Text.ID_NOT_EXISTS);
+
+        Optional<EmploymentDTO> optEmploymentByName = findByName(employmentDto.getName());
+        String nameCompare = optEmploymentById.get().getName();
+        if ((optEmploymentByName.isPresent() && nameCompare != optEmploymentByName.get().getName()))
+            throw new ResourceNotFoundException(Text.NAME_ALREADY_EXISTS);
+
+        Optional<EmploymentDTO> optEmploymentByLevel = findByLevel(employmentDto.getLevel());
+        Integer levelCompare = optEmploymentById.get().getLevel();
+        if ((optEmploymentByLevel.isPresent() && levelCompare != optEmploymentByLevel.get().getLevel()))
+            throw new ResourceNotFoundException(Text.LEVEL_ALREADY_EXISTS);
+      
+        return save(employmentDto);
     }
 
-    public EmploymentDTO save(EmploymentDTO employmentDTO) {
+    private EmploymentDTO save(EmploymentDTO employmentDTO) {
         return iCategoryRepository.findById(employmentDTO.getCategory().getId()).map(catego -> {
             Employment employment = employmentMapper.dtoToEntity(employmentDTO);
             employment.setCategory(catego);
-            final Employment createdEmployment = iEmploymentRepository.save(employment);
-            return employmentMapper.entityToDTO(createdEmployment);
-        }).orElse(null);
+            final Employment savedEmployment = iEmploymentRepository.save(employment);
+            return employmentMapper.entityToDTO(savedEmployment);
+        }).orElseThrow(() -> new ResourceNotFoundException(Text.ID_CATEGORY_NOT_EXISTS));
     }
 
     public List<EmploymentDTO> findAll(Pageable pageable) {

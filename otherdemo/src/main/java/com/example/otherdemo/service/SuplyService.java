@@ -8,9 +8,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.example.otherdemo.dto.SuplyDTO;
+import com.example.otherdemo.entity.Suply;
+import com.example.otherdemo.exception.ResourceNotFoundException;
 import com.example.otherdemo.mapper.ISuplyMapper;
 import com.example.otherdemo.repository.ISuplyRepository;
-
+import com.example.otherdemo.util.Text;
 
 @Service
 public class SuplyService {
@@ -21,25 +23,25 @@ public class SuplyService {
     @Autowired
     private ISuplyMapper suplyMapper;
 
- 
-    public Boolean verifyCreate(SuplyDTO suplyDTO) {
-        return findByName(suplyDTO.getName()).isEmpty();
+    public SuplyDTO create(SuplyDTO suplyDto) {
+        Optional<Suply> optSuply = iSuplyRepository.findByName(suplyDto.getName());
+        if (optSuply.isPresent())
+            throw new ResourceNotFoundException(Text.NAME_ALREADY_EXISTS);
+        return save(suplyDto);
     }
 
-    public Boolean verifyUpdate(SuplyDTO suplyDTO) {
-        Optional<SuplyDTO> optSuplyById = findById(suplyDTO.getId());
-        Optional<SuplyDTO> optSuplyByName = findByName(suplyDTO.getName());
-        if (optSuplyById.isPresent()) {
-            String nameCompare = optSuplyById.get().getName();
-            if (optSuplyByName.isPresent() && nameCompare != optSuplyByName.get().getName()) {
-                return Boolean.FALSE;
-            }
-            return Boolean.TRUE;
-        }
-        return Boolean.FALSE;
+    public SuplyDTO update(SuplyDTO suplyDto) {
+        Optional<SuplyDTO> optSuplyById = findById(suplyDto.getId());
+        if (optSuplyById.isEmpty())
+            throw new ResourceNotFoundException(Text.ID_NOT_EXISTS);
+        Optional<SuplyDTO> optSuplyByName = findByName(suplyDto.getName());
+        String nameCompare = optSuplyById.get().getName();
+        if (optSuplyByName.isPresent() && nameCompare != optSuplyByName.get().getName())
+            throw new ResourceNotFoundException(Text.NAME_ALREADY_EXISTS);
+        return save(suplyDto);
     }
 
-    public SuplyDTO save(SuplyDTO suplyDto) {
+    private SuplyDTO save(SuplyDTO suplyDto) {
         return suplyMapper.entityToDTO(iSuplyRepository.save(suplyMapper.dtoToEntity(suplyDto)));
     }
 
