@@ -1,0 +1,10 @@
+#-- NAME --#
+spring:
+  application:
+    name: eureka-service
+
+#-- CLOUD --#
+  cloud:
+    config:
+      enabled: true
+      uri: http://localhost:8081
