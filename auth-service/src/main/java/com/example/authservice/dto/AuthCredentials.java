@@ -1,9 +1,11 @@
-package com.example.authservice.security;
+package com.example.authservice.dto;
+
+import java.io.Serializable;
 
 import lombok.Data;
 
 @Data
-public class AuthCredentials {
+public class AuthCredentials implements Serializable{
 
     private String email;
     private String pass;

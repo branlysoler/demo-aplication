@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class UserAuthDto implements Serializable{
+public class UserAuthDTO implements Serializable{
 
     private Long id;
 
