@@ -23,3 +23,7 @@ spring:
           uri: lb://otherdemo
           predicates: 
             - Path=/api/**
+        - id: auth
+          uri: lb://auth
+          predicates: 
+            - Path=/auth/**
