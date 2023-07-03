@@ -19,6 +19,8 @@ spring:
           uri: lb://demo
           predicates: 
             - Path=/api/**
+          filters:
+            - AuthFilter
         - id: otherdemo
           uri: lb://otherdemo
           predicates: 
