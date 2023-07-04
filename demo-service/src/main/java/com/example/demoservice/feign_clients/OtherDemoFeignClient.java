@@ -15,25 +15,25 @@ import com.example.demoservice.dto.SuplyDTO;
 @FeignClient(name = "otherdemo-service")
 public interface OtherDemoFeignClient {
 
-    @PostMapping("/suplies/create")
+    @PostMapping("/otherdemo-service/suplies/create")
     public ResponseEntity<?> create(@RequestBody SuplyDTO suplyDTO);
 
-    @PutMapping("/suplies/update")
+    @PutMapping("/otherdemo-service/suplies/update")
     public ResponseEntity<?> update(@RequestBody SuplyDTO suplyDTO);
 
-    @GetMapping("/suplies/findAll")
+    @GetMapping("/otherdemo-service/suplies/findAll")
     public ResponseEntity<?> findAll(Pageable pageable);
 
-    @GetMapping("/suplies/findById/{id}")
+    @GetMapping("/otherdemo-service/suplies/findById/{id}")
     public ResponseEntity<?> findById(@PathVariable Long id);
 
-    @GetMapping("/suplies/findByName/{name}")
+    @GetMapping("/otherdemo-service/suplies/findByName/{name}")
     public ResponseEntity<?> findByName(@PathVariable String name);
 
-    @DeleteMapping("/suplies/delete/{id}")
+    @DeleteMapping("/otherdemo-service/suplies/delete/{id}")
     public ResponseEntity<?> deleteById(@PathVariable Long id);
 
-    @DeleteMapping("/suplies/deleteAll")
+    @DeleteMapping("/otherdemo-service/suplies/deleteAll")
     public ResponseEntity<?> deleteAll();
     
 }
