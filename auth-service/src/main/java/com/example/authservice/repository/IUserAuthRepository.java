@@ -8,6 +8,6 @@ import com.example.authservice.entity.UserAuth;
 
 public interface IUserAuthRepository extends JpaRepository<UserAuth, Long>{
 
-    Optional<UserAuth> findByEmail(String email);
+    Optional<UserAuth> findByUsername(String email);
     
 }

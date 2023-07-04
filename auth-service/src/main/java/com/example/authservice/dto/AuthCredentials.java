@@ -7,25 +7,10 @@ import lombok.Data;
 @Data
 public class AuthCredentials implements Serializable{
 
-    private String email;
+    private String username;
     private String pass;
 
     //agregar parametro con la lisra de GrantedAutority
-    
-
-    /**
-     * @return String return the email
-     */
-    public String getEmail() {
-        return email;
-    }
-
-    /**
-     * @param email the email to set
-     */
-    public void setEmail(String email) {
-        this.email = email;
-    }
 
     /**
      * @return String return the pass
@@ -39,6 +24,20 @@ public class AuthCredentials implements Serializable{
      */
     public void setPass(String pass) {
         this.pass = pass;
+    }
+
+    /**
+     * @return String return the username
+     */
+    public String getUsername() {
+        return username;
+    }
+
+    /**
+     * @param username the username to set
+     */
+    public void setUsername(String username) {
+        this.username = username;
     }
 
 }

@@ -2,6 +2,8 @@ package com.example.authservice.dto;
 
 import java.io.Serializable;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -15,8 +17,9 @@ public class UserAuthDTO implements Serializable{
 
     private Long id;
 
-    private String name;
+    private String username;
 
+    @JsonIgnore
     private String pass;
 
     private String email;
@@ -37,20 +40,6 @@ public class UserAuthDTO implements Serializable{
      */
     public void setId(Long id) {
         this.id = id;
-    }
-
-    /**
-     * @return String return the username
-     */
-    public String getName() {
-        return name;
-    }
-
-    /**
-     * @param username the username to set
-     */
-    public void setName(String username) {
-        this.name = username;
     }
 
     /**
@@ -109,4 +98,18 @@ public class UserAuthDTO implements Serializable{
         this.email = email;
     }
     
+    /**
+     * @return String return the username
+     */
+    public String getUsername() {
+        return username;
+    }
+
+    /**
+     * @param username the username to set
+     */
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
 }
