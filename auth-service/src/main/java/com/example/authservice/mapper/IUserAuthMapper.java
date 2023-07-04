@@ -4,17 +4,17 @@ import java.util.List;
 
 import org.mapstruct.Mapper;
 
-import com.example.authservice.dto.UserAuthDTO;
+import com.example.authservice.dto.UserAuthDto;
 import com.example.authservice.entity.UserAuth;
 
 @Mapper(componentModel = "spring")
 public interface IUserAuthMapper {
 
-    UserAuthDTO entityToDTO(UserAuth category);
+    UserAuthDto entityToDTO(UserAuth category);
 
-    UserAuth dtoToEntity(UserAuthDTO userAuthDto);
+    UserAuth dtoToEntity(UserAuthDto userAuthDto);
 
-    List<UserAuthDTO> entityToDTO(Iterable<UserAuth> iterable);
+    List<UserAuthDto> entityToDTO(Iterable<UserAuth> iterable);
 
     
 }
