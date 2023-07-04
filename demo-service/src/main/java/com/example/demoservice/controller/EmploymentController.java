@@ -23,7 +23,7 @@ import com.example.demoservice.exception.ResourceNotFoundException;
 import com.example.demoservice.service.EmploymentService;
 
 @RestController
-@RequestMapping("demo-service/employments")
+@RequestMapping("/demo-service/employments")
 public class EmploymentController {
 
     @Autowired

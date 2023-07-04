@@ -28,7 +28,8 @@ public class AuthFilter extends AbstractGatewayFilterFactory<AuthFilter.Config> 
 
     @Override
     public GatewayFilter apply(Config config) {
-        return (exchange, chain) -> {
+        try {
+            return (exchange, chain) -> {
             if (!exchange.getRequest().getHeaders().containsKey(HttpHeaders.AUTHORIZATION))
                 return onError(exchange, HttpStatus.BAD_REQUEST);
             String tokenHeader = exchange.getRequest().getHeaders().getFirst(HttpHeaders.AUTHORIZATION);
@@ -44,6 +45,10 @@ public class AuthFilter extends AbstractGatewayFilterFactory<AuthFilter.Config> 
                         return exchange;
                     }).flatMap(chain::filter);
         };
+        } catch (Exception e) {
+            return (exchange, chain) -> onError(exchange, HttpStatus.NOT_FOUND);
+        }
+        
     }
 
     public Mono<Void> onError(ServerWebExchange exchange, HttpStatus status) {

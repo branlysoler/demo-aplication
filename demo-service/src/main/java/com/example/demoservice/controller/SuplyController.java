@@ -23,7 +23,7 @@ import feign.FeignException;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 
 @RestController
-@RequestMapping("demo-service/suplies")
+@RequestMapping("/demo-service/suplies")
 public class SuplyController {
 
     @Autowired

@@ -22,7 +22,7 @@ import com.example.otherdemoservice.exception.ResourceNotFoundException;
 import com.example.otherdemoservice.service.SuplyService;
 
 @RestController
-@RequestMapping("otherdemo-service/suplies")
+@RequestMapping("/otherdemo-service/suplies")
 public class SuplyController {
 
     @Autowired

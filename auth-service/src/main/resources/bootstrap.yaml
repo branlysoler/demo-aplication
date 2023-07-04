@@ -27,4 +27,4 @@ spring:
 
 jwt:
   secret: as7655ss7GAPHSBhs034mKgIYV64838mgsJGG88bjil12
-  validity_seconds: 2_592_000L
+  validity_seconds: 2_592_000
