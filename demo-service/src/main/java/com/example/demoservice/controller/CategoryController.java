@@ -22,7 +22,7 @@ import com.example.demoservice.exception.ResourceNotFoundException;
 import com.example.demoservice.service.CategoryService;
 
 @RestController
-@RequestMapping("demo-service/categories")
+@RequestMapping("/demo-service/categories")
 public class CategoryController {
 
     @Autowired

@@ -2,8 +2,6 @@ package com.example.authservice.dto;
 
 import java.io.Serializable;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -19,7 +17,6 @@ public class UserAuthDto implements Serializable{
 
     private String username;
 
-    @JsonIgnore
     private String pass;
 
     private String email;

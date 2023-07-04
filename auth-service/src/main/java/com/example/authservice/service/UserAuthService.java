@@ -44,7 +44,8 @@ public class UserAuthService {
         Optional<UserAuth> optUserAuth = iUserAuthRepository.findByUsername(userAuthDto.getUsername());
         if (optUserAuth.isPresent())
             throw new ResourceNotFoundException(Text.USERNAME_ALREADY_EXISTS);
-        userAuthDto.setPass(passwordEncode.encode(userAuthDto.getPass()));
+        String pass = passwordEncode.encode(userAuthDto.getPass());
+        userAuthDto.setPass(pass);
         return save(userAuthDto);
     }
 
