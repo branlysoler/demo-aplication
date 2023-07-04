@@ -15,7 +15,7 @@ public class WebSecurityConfig {
         http
                 .csrf((csrf) -> csrf.disable())
                 .authorizeHttpRequests((authorizeHttpRequests) -> {
-                    authorizeHttpRequests.anyRequest().authenticated();
+                    authorizeHttpRequests.anyRequest().permitAll();
                 })
                 .sessionManagement((session) -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
         return http.build();
