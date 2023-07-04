@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.authservice.dto.AuthCredentials;
-import com.example.authservice.dto.UserAuthDTO;
+import com.example.authservice.dto.UserAuthDto;
 import com.example.authservice.exception.ResourceNotFoundException;
 import com.example.authservice.service.UserAuthService;
 
@@ -27,7 +27,7 @@ public class GlobalController {
     private static final Log LOGGER = LogFactory.getLog(GlobalController.class);
 
     @PostMapping("/create-first")
-    public ResponseEntity<?> createFirst(@RequestBody UserAuthDTO userAuthDto) {
+    public ResponseEntity<?> createFirst(@RequestBody UserAuthDto userAuthDto) {
         LOGGER.info("Create User: " + userAuthDto.toString());
         try {
             return ResponseEntity.status(HttpStatus.CREATED).body(userAuthService.createFirst(userAuthDto));

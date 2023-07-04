@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 
 import com.example.authservice.dto.AuthCredentials;
 import com.example.authservice.dto.TokenDTO;
-import com.example.authservice.dto.UserAuthDTO;
+import com.example.authservice.dto.UserAuthDto;
 import com.example.authservice.entity.UserAuth;
 import com.example.authservice.exception.ResourceNotFoundException;
 import com.example.authservice.mapper.IUserAuthMapper;
@@ -33,14 +33,14 @@ public class UserAuthService {
     @Autowired
     private JwtnProvider jwtProvider;
 
-    public UserAuthDTO createFirst(UserAuthDTO userAuthDto) {
+    public UserAuthDto createFirst(UserAuthDto userAuthDto) {
         List<UserAuth> userAuths = iUserAuthRepository.findAll();
         if (!userAuths.isEmpty())
             throw new ResourceNotFoundException(Text.USERS_EXISTS);
         return create(userAuthDto);
     }
 
-    public UserAuthDTO create(UserAuthDTO userAuthDto) {
+    public UserAuthDto create(UserAuthDto userAuthDto) {
         Optional<UserAuth> optUserAuth = iUserAuthRepository.findByUsername(userAuthDto.getUsername());
         if (optUserAuth.isPresent())
             throw new ResourceNotFoundException(Text.USERNAME_ALREADY_EXISTS);
@@ -67,11 +67,11 @@ public class UserAuthService {
         return new TokenDTO(token);
     }
 
-    public List<UserAuthDTO> findAll(Pageable pageable) {
+    public List<UserAuthDto> findAll(Pageable pageable) {
         return iUserAuthMapper.entityToDTO(iUserAuthRepository.findAll(pageable));
     }
 
-    private UserAuthDTO save(UserAuthDTO userAuthDto) {
+    private UserAuthDto save(UserAuthDto userAuthDto) {
         return iUserAuthMapper.entityToDTO(iUserAuthRepository.save(iUserAuthMapper.dtoToEntity(userAuthDto)));
     }
 
