@@ -15,11 +15,10 @@ public class WebSecurityConfig {
         http
                 .csrf((csrf) -> csrf.disable())
                 .authorizeHttpRequests((authorizeHttpRequests) -> {
-                    authorizeHttpRequests.requestMatchers("/auth-service/global/**").permitAll();
-                    authorizeHttpRequests.anyRequest().authenticated();
+                    //authorizeHttpRequests.requestMatchers("/auth-service/global/**").permitAll();
+                    authorizeHttpRequests.anyRequest().permitAll();
                 })
                 .sessionManagement((session) -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
         return http.build();
     }
-
 }

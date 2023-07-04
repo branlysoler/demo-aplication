@@ -16,20 +16,20 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Table(name = "user_Auth")
+@Table(name = "user_auth")
 public class UserAuth{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
-    private String name;
+    @Column(nullable = false, unique = true)
+    private String username;
 
     @Column(nullable = false)
     private String pass;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private String email;
 
     @Column(nullable = false)
@@ -50,20 +50,6 @@ public class UserAuth{
      */
     public void setId(Long id) {
         this.id = id;
-    }
-
-    /**
-     * @return String return the username
-     */
-    public String getName() {
-        return name;
-    }
-
-    /**
-     * @param username the username to set
-     */
-    public void setName(String username) {
-        this.name = username;
     }
 
     /**
@@ -120,6 +106,21 @@ public class UserAuth{
      */
     public void setEmail(String email) {
         this.email = email;
+    }
+
+
+    /**
+     * @return String return the username
+     */
+    public String getUsername() {
+        return username;
+    }
+
+    /**
+     * @param username the username to set
+     */
+    public void setUsername(String username) {
+        this.username = username;
     }
 
 }

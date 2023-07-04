@@ -29,21 +29,20 @@ public class AuthFilter extends AbstractGatewayFilterFactory<AuthFilter.Config> 
     @Override
     public GatewayFilter apply(Config config) {
         return (exchange, chain) -> {
-            if (!exchange.getRequest().getHeaders().containsKey(HttpHeaders.AUTHORIZATION)) 
+            if (!exchange.getRequest().getHeaders().containsKey(HttpHeaders.AUTHORIZATION))
                 return onError(exchange, HttpStatus.BAD_REQUEST);
             String tokenHeader = exchange.getRequest().getHeaders().getFirst(HttpHeaders.AUTHORIZATION);
-            String [] chunks = tokenHeader.split(" ");
-            if (chunks.length != 2 ||  !chunks[0].equals("Bearer")) 
+            String[] chunks = tokenHeader.split(" ");
+            if (chunks.length != 2 || !chunks[0].equals("Bearer"))
                 return onError(exchange, HttpStatus.BAD_REQUEST);
             return webClient.build()
-            .post()
-            .uri("http://auth-service/global/validate-token?token=" + chunks[1])
-            .retrieve().bodyToMono(TokenDTO.class)
-            .map(t -> {
-                t.getToken();
-                return exchange;
-            }).flatMap(chain::filter);
-
+                    .post()
+                    .uri("http://auth-service/global/validate-token?token=" + chunks[1])
+                    .retrieve().bodyToMono(TokenDTO.class)
+                    .map(t -> {
+                        t.getToken();
+                        return exchange;
+                    }).flatMap(chain::filter);
         };
     }
 

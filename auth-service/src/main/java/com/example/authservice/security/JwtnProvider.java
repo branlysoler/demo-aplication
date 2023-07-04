@@ -22,15 +22,15 @@ public class JwtnProvider {
 
     // agregar la lista de GrabtedAutority como parametro de entrada en el metodo
     // para despues agregarla al Map extra como un claim adicional
-    public String createToken(String name, String email) {
+    public String createToken(String username, String email) {
         long expirationTime = Long.valueOf(acces_token_validity_seconds) * 1_000;
         Date expirationDate = new Date(System.currentTimeMillis() + expirationTime);
 
         Map<String, Object> extra = new HashMap<>();
-        extra.put("name", name);
+        extra.put("email", email);
 
         return Jwts.builder()
-                .setSubject(email)
+                .setSubject(username)
                 .setExpiration(expirationDate)
                 .addClaims(extra)
                 .signWith(Keys.hmacShaKeyFor(acces_token_secret.getBytes()))
@@ -49,7 +49,7 @@ public class JwtnProvider {
         }
     }
 
-    public String getEmailFromToken(String token) {
+    public String getUsernameFromToken(String token) {
         try {
             return Jwts.parserBuilder()
                     .setSigningKey(acces_token_secret.getBytes())

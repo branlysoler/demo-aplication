@@ -41,28 +41,28 @@ public class UserAuthService {
     }
 
     public UserAuthDTO create(UserAuthDTO userAuthDto) {
-        Optional<UserAuth> optUserAuth = iUserAuthRepository.findByEmail(userAuthDto.getEmail());
+        Optional<UserAuth> optUserAuth = iUserAuthRepository.findByUsername(userAuthDto.getUsername());
         if (optUserAuth.isPresent())
-            throw new ResourceNotFoundException(Text.EMAIL_ALREADY_EXISTS);
+            throw new ResourceNotFoundException(Text.USERNAME_ALREADY_EXISTS);
         userAuthDto.setPass(passwordEncode.encode(userAuthDto.getPass()));
         return save(userAuthDto);
     }
 
     public TokenDTO login(AuthCredentials authCredentials) {
-        Optional<UserAuth> optUserAuth = iUserAuthRepository.findByEmail(authCredentials.getEmail());
+        Optional<UserAuth> optUserAuth = iUserAuthRepository.findByUsername(authCredentials.getUsername());
         if (optUserAuth.isEmpty())
-            throw new ResourceNotFoundException(Text.EMAIL_ALREADY_EXISTS);
+            throw new ResourceNotFoundException(Text.USERNAME_ALREADY_EXISTS);
         if (!passwordEncode.matches(authCredentials.getPass(), optUserAuth.get().getPass())) 
             throw new ResourceNotFoundException(Text.PASS_INCORRECT);
-        return new TokenDTO(jwtProvider.createToken(optUserAuth.get().getName(), optUserAuth.get().getEmail()));
+        return new TokenDTO(jwtProvider.createToken(optUserAuth.get().getUsername(), optUserAuth.get().getEmail()));
 
     }
 
     public TokenDTO validateToken(String token) {
         if (!jwtProvider.validateToken(token))
             throw new ResourceNotFoundException(Text.TOKEN_INVALID);
-        String email = jwtProvider.getEmailFromToken(token);
-        if (iUserAuthRepository.findByEmail(email).isEmpty())
+        String username = jwtProvider.getUsernameFromToken(token);
+        if (iUserAuthRepository.findByUsername(username).isEmpty())
             throw new ResourceNotFoundException(Text.TOKEN_INVALID);
         return new TokenDTO(token);
     }
